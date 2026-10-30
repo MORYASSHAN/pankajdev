@@ -28,6 +28,8 @@ export default function Contact() {
         duration: 1.1,
         ease: "power3.out",
         stagger: 0.08,
+        // hand the transform back to CSS once in, so the hover lift can apply
+        clearProps: "transform,translate",
         scrollTrigger: { trigger: root.current, start: "top 55%" },
       });
     }, root);

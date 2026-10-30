@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { projects } from "@/lib/content";
 import ProjectDetail from "./ProjectDetail";
@@ -51,17 +51,35 @@ export default function Projects() {
     return () => ctx.revert();
   }, []);
 
-  // gentle 3D tilt toward the cursor
+  // an open case study gets its own history entry, so the phone's back gesture or the browser's
+  // back button closes it instead of leaving the site
+  const show = (i) => {
+    if (!history.state?.pd) history.pushState({ ...history.state, pd: true }, "");
+    setOpen(i);
+  };
+  const close = useCallback(() => {
+    if (history.state?.pd) history.back();
+    else setOpen(null);
+  }, []);
+  useEffect(() => {
+    const onPop = () => {
+      if (!history.state?.pd) setOpen(null);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // gentle 3D tilt toward the cursor; the tile also rises off the grid
   const tilt = (e) => {
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    gsap.to(el, { rotateY: x * 6, rotateX: -y * 6, duration: 0.6, ease: "power3.out" });
+    gsap.to(el, { rotateY: x * 8, rotateX: -y * 8, y: -6, z: 40, duration: 0.6, ease: "power3.out" });
     gsap.to(el.querySelector("img"), { x: -x * 18, y: -y * 18, duration: 0.8, ease: "power3.out" });
   };
   const untilt = (e) => {
-    gsap.to(e.currentTarget, { rotateY: 0, rotateX: 0, duration: 0.8, ease: "power3.out" });
+    gsap.to(e.currentTarget, { rotateY: 0, rotateX: 0, y: 0, z: 0, duration: 0.8, ease: "power3.out" });
     gsap.to(e.currentTarget.querySelector("img"), { x: 0, y: 0, duration: 0.8, ease: "power3.out" });
   };
 
@@ -90,7 +108,7 @@ export default function Projects() {
             type="button"
             key={p.slug}
             className={`tile tile--${p.slug}`}
-            onClick={() => setOpen(i)}
+            onClick={() => show(i)}
             onMouseMove={tilt}
             onMouseLeave={untilt}
           >
@@ -112,7 +130,7 @@ export default function Projects() {
         ))}
       </div>
 
-      <ProjectDetail index={open} onClose={() => setOpen(null)} onNav={setOpen} />
+      <ProjectDetail index={open} onClose={close} onNav={setOpen} />
     </section>
   );
 }

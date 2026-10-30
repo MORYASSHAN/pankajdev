@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { projects } from "@/lib/content";
 import { cases } from "@/lib/cases";
@@ -8,9 +9,14 @@ export default function ProjectDetail({ index, onClose, onNav }) {
   const root = useRef(null);
   const open = index !== null && index !== undefined;
   const p = open ? projects[index] : null;
+  // rendered straight into <body>: inside the page the sections form their own stacking layers,
+  // which left the fixed top bar and side markers drawn over the case study
+  const [host, setHost] = useState(null);
+  useEffect(() => setHost(document.body), []);
 
   useEffect(() => {
     const el = root.current;
+    if (!el) return;
     if (open) {
       window.__lenis?.stop();
       gsap.set(el, { display: "block" });
@@ -40,21 +46,26 @@ export default function ProjectDetail({ index, onClose, onNav }) {
         },
       });
     }
-  }, [open, index, onClose]);
+  }, [open, index, onClose, host]);
 
   const next = open ? (index + 1) % projects.length : 0;
 
-  return (
+  if (!host) return null;
+  return createPortal(
     <div className="pd" ref={root} data-lenis-prevent role="dialog" aria-modal="true" aria-hidden={!open}>
       {p && (
         <div className="pd-inner">
-          <div className="pd-top mono">
-            <span className="pd-in">
+          {/* stays pinned to the top while the case study scrolls, so the way back is always in reach */}
+          <div className="pd-bar">
+            <button type="button" className="pd-back" onClick={onClose}>
+              <span className="pd-back-arrow" aria-hidden="true">
+                ←
+              </span>
+              All projects
+            </button>
+            <span className="pd-count mono">
               {String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
             </span>
-            <button type="button" className="pd-close hover-line" onClick={onClose}>
-              Close ✕
-            </button>
           </div>
 
           <h3 className="pd-title">
@@ -148,8 +159,18 @@ export default function ProjectDetail({ index, onClose, onNav }) {
             <span className="mono">Next project</span>
             <span className="pd-next-name">{projects[next].name} →</span>
           </button>
+
+          <div className="pd-end">
+            <button type="button" className="pd-back" onClick={onClose}>
+              <span className="pd-back-arrow" aria-hidden="true">
+                ←
+              </span>
+              Back to all projects
+            </button>
+          </div>
         </div>
       )}
-    </div>
+    </div>,
+    host
   );
 }

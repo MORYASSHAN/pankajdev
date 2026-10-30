@@ -38,8 +38,8 @@ function track(url, onProgress) {
 }
 
 // Intro: the name rises letter by letter from the centre (CSS, so it plays before the scripts
-// arrive) while a counter runs 0 to 100 on the real download progress, then the name grows to full width and drops to the bottom, and a dark and a
-// red panel sweep up over it and off again to uncover the hero.
+// arrive) while a counter runs 0 to 100 on the real download progress, then the name grows to full
+// width and drops to the bottom while the black fades away into the hero underneath.
 export default function Loader() {
   const root = useRef(null);
   const name = useRef(null);
@@ -104,22 +104,26 @@ export default function Loader() {
     Promise.all([fonts, reached]).then(() => {
       const box = name.current.getBoundingClientRect();
       const pad = window.innerWidth < 700 ? 20 : 48;
-      const scale = (window.innerWidth - pad * 2) / box.width;
-      const targetY = window.innerHeight - 80 - (box.height * scale) / 2 - (box.top + box.height / 2);
+      let scale = (window.innerWidth - pad * 2) / box.width;
+      let targetX = 0;
+      let targetY = window.innerHeight - 80 - (box.height * scale) / 2 - (box.top + box.height / 2);
+      // when the hero's name is on one line too, land exactly on it so the crossfade doesn't double up
+      const hero = document.querySelector(".hero-name")?.getBoundingClientRect();
+      if (hero && Math.abs(hero.width / hero.height / (box.width / box.height) - 1) < 0.3) {
+        scale = hero.width / box.width;
+        targetX = hero.left + hero.width / 2 - (box.left + box.width / 2);
+        targetY = hero.bottom - (box.height * scale) / 2 - (box.top + box.height / 2);
+      }
 
       tl = gsap
         .timeline({ delay: 0.25 })
         .to(q(".ld-meta"), { autoAlpha: 0, y: 12, duration: 0.3, ease: "power2.in" })
         .addLabel("grow")
-        .to(name.current, { scale, y: targetY, duration: 0.75, ease: "power3.inOut" }, "grow")
-        .to(q(".ld-panel--dark"), { yPercent: 0, duration: 0.45, ease: "power3.inOut" }, "grow+=0.05")
-        .to(q(".ld-panel--red"), { yPercent: 0, duration: 0.45, ease: "power3.inOut" }, "-=0.3")
-        .add(() => {
-          gsap.set([name.current, q(".ld-bg")], { autoAlpha: 0 });
-          done();
-        })
-        .to(q(".ld-panel--red"), { yPercent: -100, duration: 0.55, ease: "power3.inOut" }, "+=0.05")
-        .to(q(".ld-panel--dark"), { yPercent: -100, duration: 0.55, ease: "power3.inOut" }, "-=0.4")
+        .to(name.current, { scale, x: targetX, y: targetY, duration: 0.75, ease: "power3.inOut" }, "grow")
+        // the hero sits right underneath: start its entrance and dissolve the black into it
+        .add(done, "grow+=0.55")
+        .to(q(".ld-bg"), { autoAlpha: 0, duration: 0.7, ease: "power2.inOut" }, "grow+=0.55")
+        .to(name.current, { autoAlpha: 0, duration: 0.45, ease: "power2.out" }, "grow+=0.75")
         .set(el, { display: "none" });
     });
 
@@ -166,8 +170,6 @@ export default function Loader() {
         </span>
       </div>
       <script dangerouslySetInnerHTML={{ __html: bootScript }} />
-      <div className="ld-panel ld-panel--dark" />
-      <div className="ld-panel ld-panel--red" />
     </div>
   );
 }

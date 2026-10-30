@@ -307,20 +307,6 @@ em {
   transform-origin: 0 50%;
 }
 
-.ld-panel {
-  position: absolute;
-  inset: 0;
-  transform: translateY(100%);
-}
-
-.ld-panel--dark {
-  background: #111;
-}
-
-.ld-panel--red {
-  background: #ff1e00;
-}
-
 /* ---------- Link letter roll ---------- */
 
 .roll {
@@ -695,7 +681,7 @@ a:focus-visible .roll-c > span {
   font-size: clamp(32px, 4.4vw, 72px);
   letter-spacing: -0.04em;
   white-space: nowrap;
-  transition: letter-spacing 0.8s var(--ease);
+  transition: letter-spacing 0.8s var(--ease), translate 0.45s var(--ease), text-shadow 0.45s var(--ease);
 }
 
 .about-media-label:hover {
@@ -893,7 +879,7 @@ a:focus-visible .roll-c > span {
   letter-spacing: -0.05em;
   line-height: 1;
   border-bottom: 3px solid #000;
-  transition: color 0.4s, border-color 0.4s;
+  transition: color 0.4s, border-color 0.4s, translate 0.45s var(--ease), text-shadow 0.45s var(--ease);
 }
 
 .dx-mail span {
@@ -942,14 +928,71 @@ a:focus-visible .roll-c > span {
   padding: var(--gutter);
 }
 
-.pd-top {
+.pd-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  overflow: hidden;
+  margin: calc(-1 * var(--gutter)) calc(-1 * var(--gutter)) 0;
+  padding: 14px var(--gutter) 22px;
+  background: linear-gradient(#0d0d0d 55%, rgba(13, 13, 13, 0));
+  pointer-events: none;
 }
 
-.pd-close {
+.pd-bar > * {
+  pointer-events: auto;
+}
+
+.pd-count {
   font-size: 11px;
+  color: var(--muted);
+}
+
+.pd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px 11px 14px;
+  border-radius: 99px;
+  border: 1px solid rgba(240, 240, 240, 0.22);
+  background: rgba(240, 240, 240, 0.07);
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.35s, border-color 0.35s, translate 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+
+.pd-back-arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 14px;
+  transition: translate 0.45s var(--ease);
+}
+
+.pd-back:hover {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.pd-back:hover .pd-back-arrow {
+  background: #fff;
+  color: var(--red);
+  translate: -3px 0;
+}
+
+.pd-end {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 12vh;
 }
 
 .pd-title {
@@ -1565,6 +1608,28 @@ a:focus-visible .roll-c > span {
 @media (max-width: 560px) {
   .dx-cards {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Lift: anything clickable rises toward the cursor ---------- */
+/* Uses the individual translate property so it stacks on top of GSAP's inline transforms.
+   Kept at zero specificity so a component's own transition list still wins where it has one. */
+
+:where(a:not(.footer-canvas), button) {
+  transition: translate 0.45s var(--ease), box-shadow 0.45s var(--ease), text-shadow 0.45s var(--ease);
+}
+
+@media (hover: hover) {
+  :where(a:not(.footer-canvas), button):hover {
+    translate: 0 -3px;
+    text-shadow: 0 7px 14px rgba(0, 0, 0, 0.55);
+  }
+
+  /* cards and pills lift further and cast a shadow, with a faint red rim
+     (the project tiles get their rise from their GSAP tilt, which owns their transform) */
+  :where(.tile, .pd-back, .mf-presets button):hover {
+    translate: 0 -6px;
+    box-shadow: 0 22px 40px -14px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 45, 26, 0.35);
   }
 }
 

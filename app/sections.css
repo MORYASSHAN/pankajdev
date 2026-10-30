@@ -340,7 +340,7 @@
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  transition: background 0.3s, color 0.3s, border-color 0.3s;
+  transition: background 0.3s, color 0.3s, border-color 0.3s, translate 0.45s var(--ease), box-shadow 0.45s var(--ease);
 }
 
 .mf-presets button:hover {
