@@ -2,11 +2,11 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { createStage, fullscreenVert, noiseGLSL } from "@/lib/three-helpers";
 import { introDone } from "@/lib/intro";
 import { person, socials } from "@/lib/content";
 import Split from "./Split";
+import Roll from "./Roll";
 import { ext } from "@/lib/links";
 
 const frag = /* glsl */ `
@@ -62,6 +62,8 @@ const frag = /* glsl */ `
   }
 `;
 
+const phrase = "Basically, I build what comes after the feed.";
+
 export default function Hero() {
   const root = useRef(null);
   const canvasWrap = useRef(null);
@@ -97,43 +99,45 @@ export default function Hero() {
 
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
-      gsap.set(q(".hero-name .char"), { yPercent: 105 });
-      gsap.set(q(".hero-fade"), { opacity: 0, y: 12 });
+      const mobile = window.innerWidth < 900;
+      gsap.set(q(".hero-tagline, .hero-bar"), { clipPath: "inset(0% 0% 100% 0%)" });
+      gsap.set(q(".hero-line"), { scaleX: 0 });
+      gsap.set(q(".hero-phrase .pc"), { opacity: 0, filter: "blur(10px)" });
 
+      // the hero is already in place under the intro panels; the gradient, tagline and bar arrive as they lift
       introDone.then(() => {
         gsap
           .timeline()
-          .to(q(".hero-name .char"), { yPercent: 0, duration: 1.4, ease: "expo.out", stagger: 0.035 })
-          .to(q(".hero-fade"), { opacity: 1, y: 0, duration: 1, ease: "power3.out", stagger: 0.08 }, 0.4)
-          .to(uniforms.uReveal, { value: 0.55, duration: 2.6, ease: "power2.out" }, 0.2);
+          .to(uniforms.uReveal, { value: 1, duration: 2.4, ease: "power2.out" }, 0)
+          .to(q(".hero-tagline"), { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "power3.inOut" }, 0.35)
+          .to(q(".hero-bar"), { clipPath: "inset(0% 0% 0% 0%)", duration: 1, ease: "power3.inOut" }, 0.65)
+          .to(q(".hero-line"), { scaleX: 1, duration: 1, ease: "power3.inOut" }, 0.65)
+          .to(q(".hero-last"), { color: "#cfe7e1", duration: 1.6, ease: "power2.out" }, 0.4);
       });
 
-      // scrolling deeper floods the gradient in, then the about section slides over it
-      ScrollTrigger.create({
-        trigger: root.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-        onUpdate: (self) => {
-          uniforms.uReveal.value = Math.max(uniforms.uReveal.value, 0.55 + self.progress * 0.6);
-        },
-      });
-      gsap.to(uniforms.uExit, {
-        value: 1,
-        ease: "none",
-        scrollTrigger: { trigger: root.current, start: "bottom bottom", end: "bottom top", scrub: true },
-      });
-      gsap.to(q(".hero-sticky-inner"), {
-        yPercent: 18,
-        scale: 0.96,
-        ease: "none",
-        scrollTrigger: { trigger: root.current, start: "bottom bottom", end: "bottom top", scrub: true },
-      });
-      gsap.to(q(".hero-last"), {
-        color: "#cfe7e1",
-        ease: "none",
-        scrollTrigger: { trigger: root.current, start: "top top", end: "30% top", scrub: true },
-      });
+      // scrolling: the name rises to the centre, splits apart, and a phrase blurs in behind it
+      const name = q(".hero-name")[0];
+      gsap
+        .timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom bottom", scrub: 0.5, invalidateOnRefresh: true },
+        })
+        .to(q(".hero-tagline, .hero-bar, .hero-line"), { opacity: 0, duration: 0.15 }, 0)
+        .to(name, { y: () => window.innerHeight / 2 - (name.offsetTop + name.offsetHeight / 2), duration: 0.3 }, 0)
+        .to(q(".hero-first"), { x: mobile ? "-35vw" : "-55vw", opacity: 0, duration: 0.7 }, 0.3)
+        .to(q(".hero-last"), { x: mobile ? "35vw" : "55vw", opacity: 0, duration: 0.7 }, 0.3)
+        .to(q(".hero-phrase .pc"), { opacity: 1, filter: "blur(0px)", duration: 0.06, stagger: 0.007 }, 0.62);
+
+      // on the way out the next section slides over a dimmed, blurred hero
+      gsap
+        .timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: { trigger: root.current, start: "bottom bottom", end: "bottom top", scrub: true },
+        })
+        .to(q(".hero-sticky-inner"), { y: "-30vh" }, 0)
+        .to(q(".hero-dim"), { opacity: 0.7 }, 0)
+        .to(uniforms.uExit, { value: 1 }, 0)
+        .to(q(".hero-phrase .pc"), { opacity: 0, stagger: { each: 0.01, from: "end" } }, 0);
     }, root);
 
     return () => {
@@ -147,8 +151,16 @@ export default function Hero() {
     <section className="hero" id="top" ref={root} data-section="Intro">
       <div className="hero-sticky">
         <div className="hero-canvas" ref={canvasWrap} />
+        <div className="hero-dim" />
+        <p className="hero-phrase" aria-label={phrase}>
+          {[...phrase].map((c, i) => (
+            <span className="pc" key={i} aria-hidden="true">
+              {c === " " ? " " : c}
+            </span>
+          ))}
+        </p>
         <div className="hero-sticky-inner">
-          <p className="hero-tagline hero-fade">
+          <p className="hero-tagline">
             {person.tagline.map((l, i) => (
               <span key={i}>
                 {i === 0 ? (
@@ -168,24 +180,31 @@ export default function Hero() {
             <Split text={`${person.last}.`} className="hero-last serif" />
           </h1>
 
+          <span className="hero-line" />
           <div className="hero-bar">
-            <a href="#about" className="hero-fade">
-              → DFORR
+            <a href="#dforr">
+              <Roll text="→ DFORR" />
             </a>
-            <nav className="hero-socials hero-fade">
+            <nav className="hero-socials">
               {socials.map((s, i) => (
                 <span key={s.label}>
                   {i > 0 && <i>/</i>}
-                  <a href={s.href} {...ext(s.href)} className="hover-line">
-                    {s.label}
+                  <a href={s.href} {...ext(s.href)}>
+                    <Roll text={s.label} />
                   </a>
                 </span>
               ))}
             </nav>
-            <nav className="hero-nav hero-fade">
-              <a href="#work" className="hover-line">Work</a>
-              <a href="#about" className="hover-line">Info</a>
-              <a href="#contact" className="hover-line">Contact</a>
+            <nav className="hero-nav">
+              <a href="#work">
+                <Roll text="Work" />
+              </a>
+              <a href="#about">
+                <Roll text="Info" />
+              </a>
+              <a href="#contact">
+                <Roll text="Contact" />
+              </a>
             </nav>
           </div>
         </div>

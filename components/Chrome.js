@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { introDone } from "@/lib/intro";
 import { socials } from "@/lib/content";
 import { ext } from "@/lib/links";
+import Roll from "./Roll";
 
 // Fixed UI: top bar after the hero, scroll percentage on the left, section rail on the right.
 export default function Chrome() {
@@ -54,18 +55,18 @@ export default function Chrome() {
   return (
     <>
       <header className="topbar" ref={header}>
-        <a href="#top">→ P.K.S</a>
+        <a href="#top"><Roll text="→ P.K.S" /></a>
         <nav className="topbar-socials">
           {socials.map((s) => (
-            <a key={s.label} href={s.href} {...ext(s.href)} className="hover-line">
-              {s.label}
+            <a key={s.label} href={s.href} {...ext(s.href)}>
+              <Roll text={s.label} />
             </a>
           ))}
         </nav>
         <nav className="topbar-nav">
-          <a href="#work" className="hover-line">Work</a>
-          <a href="#about" className="hover-line">Info</a>
-          <a href="#contact" className="hover-line">Contact</a>
+          <a href="#work"><Roll text="Work" /></a>
+          <a href="#about"><Roll text="Info" /></a>
+          <a href="#contact"><Roll text="Contact" /></a>
         </nav>
       </header>
 

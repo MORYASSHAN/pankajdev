@@ -13,22 +13,15 @@ export default function Contact() {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
       gsap.fromTo(
-        q(".contact-title"),
-        { scale: 1.2, yPercent: 20 },
-        {
-          scale: 1,
-          yPercent: 0,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top bottom", end: "top 20%", scrub: true },
-        }
+        q(".contact-circle"),
+        { scale: 0 },
+        { scale: 1, ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "top 15%", scrub: true } }
       );
-      gsap.from(q(".contact-title .char"), {
-        yPercent: 100,
-        duration: 1.2,
-        ease: "expo.out",
-        stagger: 0.04,
-        scrollTrigger: { trigger: root.current, start: "top 70%" },
-      });
+      gsap.fromTo(
+        q(".contact-title"),
+        { x: "110vw" },
+        { x: 0, ease: "power3.out", scrollTrigger: { trigger: root.current, start: "top 75%", end: "top 25%", scrub: 0.6 } }
+      );
       gsap.from(q(".contact-fade"), {
         y: 30,
         opacity: 0,
@@ -53,10 +46,11 @@ export default function Contact() {
 
   return (
     <section className="contact" id="contact" ref={root} data-section="Contact">
+      <span className="contact-circle" aria-hidden="true" />
       <h2 className="contact-title">
         <Split text="Contact" />
       </h2>
-      <p className="contact-lead contact-fade">
+      <p className="contact-lead" data-reveal-blur>
         We are open to <em>seed partners</em> and <em>licensing</em> our spatial technology. If you are working on anything
         similar, I&apos;d love to chat.
       </p>

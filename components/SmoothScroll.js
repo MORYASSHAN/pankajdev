@@ -11,7 +11,7 @@ export default function SmoothScroll() {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
 
-    const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.9, smoothWheel: true });
+    const lenis = new Lenis({ lerp: 0.06, smoothWheel: true });
     window.__lenis = lenis;
     lenis.stop(); // the loader starts it again
     lenis.on("scroll", ScrollTrigger.update);
@@ -26,7 +26,7 @@ export default function SmoothScroll() {
       const id = a.getAttribute("href");
       if (id.length < 2) return;
       e.preventDefault();
-      lenis.scrollTo(id, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4) });
+      lenis.scrollTo(id, { duration: 1.2 });
     };
     document.addEventListener("click", onClick);
 

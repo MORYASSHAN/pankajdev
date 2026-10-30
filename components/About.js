@@ -112,26 +112,6 @@ export default function About() {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
 
-      // statement words light up as you read down the page
-      gsap.fromTo(
-        q(".about-statement .w"),
-        { opacity: 0.12 },
-        {
-          opacity: 1,
-          stagger: 0.08,
-          ease: "none",
-          scrollTrigger: { trigger: q(".about-statement")[0], start: "top 80%", end: "bottom 45%", scrub: true },
-        }
-      );
-
-      gsap.from(q(".about-body .line-in"), {
-        yPercent: 100,
-        opacity: 0,
-        duration: 1.1,
-        ease: "power3.out",
-        stagger: 0.08,
-        scrollTrigger: { trigger: q(".about-body")[0], start: "top 85%" },
-      });
 
       gsap.to(uniforms.uReveal, {
         value: 1,
@@ -139,13 +119,15 @@ export default function About() {
         ease: "power2.out",
         scrollTrigger: { trigger: media.current, start: "top 75%" },
       });
+      // the photo panel clears from a heavy blur as it comes up, then drifts slower than the page
       gsap.fromTo(
         q(".about-media"),
-        { clipPath: "inset(12% 0% 0% 18% round 0 0 0 22vw)" },
+        { opacity: 0, filter: "blur(20px)" },
         {
-          clipPath: "inset(0% 0% 0% 0% round 0 0 0 14vw)",
+          opacity: 1,
+          filter: "blur(0px)",
           ease: "none",
-          scrollTrigger: { trigger: q(".about-media")[0], start: "top bottom", end: "center center", scrub: true },
+          scrollTrigger: { trigger: q(".about-media")[0], start: "top bottom", end: "top 55%", scrub: true },
         }
       );
       gsap.to(uniforms.uScroll, {
@@ -170,12 +152,12 @@ export default function About() {
 
   return (
     <section className="about" id="about" ref={root} data-section="About">
-      <h2 className="about-statement">
+      <h2 className="about-statement" data-reveal-words>
         <Rich text={about.statement} wordClass="w" />
       </h2>
 
       <div className="about-grid">
-        <div className="about-body">
+        <div className="about-body" data-reveal-blur>
           <p>
             {about.body.split(". ").map((s, i, arr) => (
               <span className="line-mask" key={i}>

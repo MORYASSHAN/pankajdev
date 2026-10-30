@@ -14,11 +14,16 @@ export default function ProjectDetail({ index, onClose, onNav }) {
     if (open) {
       window.__lenis?.stop();
       gsap.set(el, { display: "block" });
-      gsap.fromTo(el, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 1, ease: "expo.inOut" });
+      gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.inOut" });
       gsap.fromTo(
         el.querySelectorAll(".pd-in"),
         { yPercent: 100, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: 1.1, ease: "expo.out", stagger: 0.05, delay: 0.45 }
+        { yPercent: 0, opacity: 1, duration: 1, ease: "power3.out", stagger: 0.06, delay: 0.55 }
+      );
+      gsap.fromTo(
+        el.querySelectorAll(".pd-sec, .pd-images"),
+        { y: 40, opacity: 0, filter: "blur(10px)" },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.9, ease: "power3.out", stagger: 0.08, delay: 0.9 }
       );
       el.scrollTop = 0;
       const onKey = (e) => e.key === "Escape" && onClose();
@@ -26,9 +31,9 @@ export default function ProjectDetail({ index, onClose, onNav }) {
       return () => window.removeEventListener("keydown", onKey);
     } else if (el.style.display === "block") {
       gsap.to(el, {
-        clipPath: "inset(0 0 100% 0)",
-        duration: 0.9,
-        ease: "expo.inOut",
+        opacity: 0,
+        duration: 0.6,
+        ease: "power2.inOut",
         onComplete: () => {
           gsap.set(el, { display: "none" });
           window.__lenis?.start();

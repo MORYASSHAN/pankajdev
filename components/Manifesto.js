@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { manifesto } from "@/lib/content";
+import { Rich } from "./Split";
 
 // Same maths as founder.dforr.in: hours reclaimed = (daily hours - 0.53) * 365.
 function calc(h) {
@@ -39,14 +40,6 @@ export default function Manifesto() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
-      gsap.from(q(".mf-title .w"), {
-        yPercent: 110,
-        opacity: 0,
-        duration: 1.2,
-        ease: "expo.out",
-        stagger: 0.03,
-        scrollTrigger: { trigger: q(".mf-title")[0], start: "top 85%" },
-      });
       gsap.utils.toArray(q(".mf-reveal")).forEach((el) =>
         gsap.from(el, { y: 50, opacity: 0, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 88%" } })
       );
@@ -66,14 +59,12 @@ export default function Manifesto() {
   return (
     <section className="mf" id="vision" ref={root} data-section="Vision">
       <span className="small-label mf-kicker">{manifesto.kicker}</span>
-      <h2 className="mf-title">
-        {manifesto.title.split(" ").map((w, i) => (
-          <span className="split-mask" key={i}>
-            <span className="w">{w}&nbsp;</span>
-          </span>
-        ))}
+      <h2 className="mf-title" data-reveal-words>
+        <Rich text={manifesto.title} wordClass="w" />
       </h2>
-      <p className="mf-body mf-reveal">{manifesto.body}</p>
+      <p className="mf-body" data-reveal-blur>
+        {manifesto.body}
+      </p>
 
       <div className="mf-compare">
         {[manifesto.today, manifesto.maya].map((c, i) => (

@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { dforr, person, socials } from "@/lib/content";
 import { ext } from "@/lib/links";
-import Split from "./Split";
+import Split, { Rich } from "./Split";
+import Roll from "./Roll";
 
 const istFmt = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Kolkata",
@@ -91,7 +92,9 @@ export default function Dforr() {
         <Split text="DFORR" />
       </h2>
 
-      <p className="dx-lead dx-fade">{dforr.lead}</p>
+      <p className="dx-lead" data-reveal-blur>
+        {dforr.lead}
+      </p>
       <p className="dx-born dx-fade mono">{dforr.born}</p>
 
       <div className="dx-cards">
@@ -106,7 +109,9 @@ export default function Dforr() {
 
       <div className="dx-vision">
         <span className="mono dx-fade">{dforr.vision.kicker}</span>
-        <h3 className="dx-fade">{dforr.vision.title}</h3>
+        <h3 data-reveal-words>
+          <Rich text={dforr.vision.title} wordClass="w" />
+        </h3>
         <p className="dx-fade">{dforr.vision.intro}</p>
         <ol>
           {dforr.vision.wants.map((w, i) => (
@@ -148,8 +153,8 @@ export default function Dforr() {
         </a>
         <div className="dx-links mono">
           {socials.map((s) => (
-            <a key={s.label} href={s.href} {...ext(s.href)} className="hover-line">
-              {s.label}
+            <a key={s.label} href={s.href} {...ext(s.href)}>
+              <Roll text={s.label} />
             </a>
           ))}
         </div>

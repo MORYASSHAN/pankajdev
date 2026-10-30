@@ -1,11 +1,25 @@
-import { Inter, Instrument_Serif, Archivo } from "next/font/google";
+import localFont from "next/font/local";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import "./sections.css";
 
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "800"], variable: "--font-sans" });
-const heavy = Archivo({ subsets: ["latin"], weight: "variable", axes: ["wdth"], variable: "--font-heavy" });
-const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-serif" });
+// Fonts ship with the site (app/fonts) so builds never depend on reaching Google Fonts.
+const inter = localFont({ src: "./fonts/inter-var.woff2", weight: "100 900", variable: "--font-sans", display: "swap" });
+const heavy = localFont({
+  src: "./fonts/archivo-var.woff2",
+  weight: "100 900",
+  variable: "--font-heavy",
+  display: "swap",
+  declarations: [{ prop: "font-stretch", value: "62% 125%" }],
+});
+const serif = localFont({
+  src: [
+    { path: "./fonts/instrument-serif.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/instrument-serif-italic.woff2", weight: "400", style: "italic" },
+  ],
+  variable: "--font-serif",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Pankaj Kumar Sharma, Founder & Systems Architect",

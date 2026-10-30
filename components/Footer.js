@@ -6,6 +6,7 @@ import { createStage } from "@/lib/three-helpers";
 import { person, socials } from "@/lib/content";
 import Split from "./Split";
 import { ext } from "@/lib/links";
+import Roll from "./Roll";
 
 const vert = /* glsl */ `
   attribute float aSize;
@@ -187,13 +188,17 @@ export default function Footer() {
         ease: "expo.out",
         scrollTrigger: { trigger: el, start: "top 75%" },
       });
-      gsap.from(q(".footer-name .char"), {
-        yPercent: 105,
-        duration: 1.4,
-        ease: "expo.out",
-        stagger: 0.04,
-        scrollTrigger: { trigger: el, start: "top 50%" },
-      });
+      // the name rises letter by letter from the middle outwards as the page bottoms out
+      gsap.fromTo(
+        q(".footer-name .char, .footer-dot"),
+        { yPercent: 110 },
+        {
+          yPercent: 0,
+          ease: "none",
+          stagger: { each: 0.04, from: "center" },
+          scrollTrigger: { trigger: el, start: "top 40%", end: "bottom bottom", scrub: 0.5 },
+        }
+      );
     }, root);
 
     return () => {
@@ -224,20 +229,20 @@ export default function Footer() {
         </div>
         <nav>
           {socials.map((s) => (
-            <a key={s.label} href={s.href} {...ext(s.href)} className="hover-line">
-              {s.label}
+            <a key={s.label} href={s.href} {...ext(s.href)}>
+              <Roll text={s.label} />
             </a>
           ))}
         </nav>
         <nav>
-          <a href="#work" className="hover-line">
-            Work
+          <a href="#work">
+            <Roll text="Work" />
           </a>
-          <a href="#about" className="hover-line">
-            Info
+          <a href="#about">
+            <Roll text="Info" />
           </a>
-          <a href="#top" className="hover-line">
-            Back to top ↑
+          <a href="#top">
+            <Roll text="Back to top ↑" />
           </a>
         </nav>
       </div>

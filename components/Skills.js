@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { skills } from "@/lib/content";
 import Split from "./Split";
+import Roll from "./Roll";
 
 export default function Skills() {
   const root = useRef(null);
@@ -20,8 +21,8 @@ export default function Skills() {
       });
       gsap.fromTo(
         q(".skills-arrow"),
-        { x: -60 },
-        { x: 20, ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "center top", scrub: true } }
+        { x: "-38vw" },
+        { x: "38vw", ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 0.5 } }
       );
       gsap.from(q(".acc"), {
         y: 40,
@@ -42,11 +43,11 @@ export default function Skills() {
         <Split text={skills.heading} by="word" />
       </h2>
       <a href="#contact" className="skills-contact small-link">
-        <svg className="skills-arrow" viewBox="0 0 120 80" aria-hidden="true">
-          <path d="M0 30 H72 L50 6 H76 L108 40 L76 74 H50 L72 50 H0 Z" fill="var(--red)" />
-        </svg>
-        <span className="hover-line">Contact me +</span>
+        <Roll text="Contact me +" />
       </a>
+      <svg className="skills-arrow" viewBox="0 0 120 80" aria-hidden="true">
+        <path d="M0 30 H72 L50 6 H76 L108 40 L76 74 H50 L72 50 H0 Z" fill="var(--red)" />
+      </svg>
 
       <div className="skills-list">
         {skills.groups.map((g, i) => (

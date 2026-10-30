@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { maya } from "@/lib/content";
+import { Rich } from "./Split";
 
 // Maya in one centred block: the three pillars as image cards, then the spatial-audio demo.
 export default function Maya() {
@@ -14,7 +15,7 @@ export default function Maya() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
-      gsap.from(q(".my-head > *"), {
+      gsap.from(q(".my-head .small-label, .my-live"), {
         y: 40,
         opacity: 0,
         duration: 1.2,
@@ -52,8 +53,10 @@ export default function Maya() {
     <section className="my" id="maya" ref={root} data-section="Maya">
       <div className="my-head">
         <span className="small-label">{maya.kicker}</span>
-        <h2>{maya.title}</h2>
-        <p>{maya.text}</p>
+        <h2 data-reveal-words>
+          <Rich text={maya.title} wordClass="w" />
+        </h2>
+        <p data-reveal-blur>{maya.text}</p>
         <div className="my-live mono">
           <i />
           {maya.live.map((l) => (

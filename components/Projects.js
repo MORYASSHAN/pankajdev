@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { projects } from "@/lib/content";
 import ProjectDetail from "./ProjectDetail";
+import { Rich } from "./Split";
 
 // All projects on one screen as an image grid; each tile opens the full case study.
 export default function Projects() {
@@ -12,13 +13,21 @@ export default function Projects() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
-      gsap.from(q(".work-head > *"), {
+      gsap.from(q(".work-head .small-label, .work-head p"), {
         y: 30,
         opacity: 0,
         duration: 1.1,
         ease: "expo.out",
         stagger: 0.08,
         scrollTrigger: { trigger: root.current, start: "top 80%" },
+      });
+      const path = q(".work-ribbon path")[0];
+      const len = path.getTotalLength();
+      gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+      gsap.to(path, {
+        strokeDashoffset: 0,
+        ease: "none",
+        scrollTrigger: { trigger: root.current, start: "top 70%", end: "bottom 20%", scrub: 1 },
       });
       gsap.fromTo(
         q(".tile"),
@@ -58,10 +67,19 @@ export default function Projects() {
 
   return (
     <section className="work" id="work" ref={root} data-section="Projects">
+      <svg className="work-ribbon" viewBox="0 0 1440 1200" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          d="M 1520 140 C 1100 60, 420 80, 180 360 C -40 620, 260 900, 720 860 C 1180 820, 1380 980, 1240 1180"
+          fill="none"
+          stroke="var(--red)"
+          strokeWidth="72"
+          strokeLinecap="round"
+        />
+      </svg>
       <div className="work-head">
         <span className="small-label">Selected work ({String(projects.length).padStart(2, "0")})</span>
-        <h2>
-          Everything I&apos;m <em>building</em>, in one place.
+        <h2 data-reveal-words>
+          <Rich text="Everything I'm *building*, in one place." wordClass="w" />
         </h2>
         <p className="mono">Click any project to see all of it</p>
       </div>

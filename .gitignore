@@ -1,4 +1,7 @@
 node_modules
 .next
 out
-$d
+.npm-cache
+.work
+.env
+.npmrc

@@ -13,6 +13,7 @@ import Skills from "@/components/Skills";
 import Awards from "@/components/Awards";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import Reveals from "@/components/Reveals";
 
 const roles = ["Builder", "Designer", "Developer", "Artist", "Systems Architect", "Founder"];
 
@@ -39,6 +40,7 @@ export default function Home() {
         </div>
       </main>
       <Footer />
+      <Reveals />
     </>
   );
 }

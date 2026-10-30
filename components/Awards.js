@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { awards } from "@/lib/content";
 
 export default function Awards() {
@@ -9,6 +10,14 @@ export default function Awards() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
+      q(".award-row").forEach((row) =>
+        ScrollTrigger.create({
+          trigger: row,
+          start: "top 58%",
+          end: "bottom 42%",
+          toggleClass: { targets: row, className: "is-active" },
+        })
+      );
       gsap.from(q(".award-row"), {
         clipPath: "inset(0 100% 0 0)",
         duration: 1.3,

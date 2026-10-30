@@ -141,8 +141,14 @@ export default function Gallery() {
         .fromTo(state, { spread: 0, fade: 0 }, { spread: 1, fade: 1, duration: 0.25, ease: "power2.out" }, 0)
         .fromTo(state, { rot: 0 }, { rot: Math.PI * 1.6, duration: 1, ease: "none" }, 0)
         .fromTo(state, { tilt: 0.08 }, { tilt: -0.05, duration: 1, ease: "none" }, 0)
-        .fromTo(q(".gallery-statement .w"), { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: 0.02, duration: 0.15 }, 0.2)
-        .to(q(".gallery-statement .w"), { opacity: 0, y: -30, stagger: 0.01, duration: 0.12 }, 0.82)
+        .fromTo(q(".gallery-statement"), { y: 100 }, { y: -100, duration: 0.5 }, 0.25)
+        .fromTo(
+          q(".gallery-statement .w"),
+          { opacity: 0, filter: "blur(8px)" },
+          { opacity: 1, filter: "blur(0px)", stagger: 0.025, duration: 0.08 },
+          0.25
+        )
+        .to(q(".gallery-statement .w"), { opacity: 0, stagger: 0.01, duration: 0.1 }, 0.66)
         .to(state, { fade: 0, spread: 1.25, duration: 0.15 }, 0.85);
     }, root);
 
