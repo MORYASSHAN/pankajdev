@@ -205,6 +205,7 @@ em {
 
 .ld-char {
   display: inline-block;
+  animation: ld-rise 0.45s cubic-bezier(0.215, 0.61, 0.355, 1) backwards;
 }
 
 .ld-char.sans {
@@ -221,6 +222,89 @@ em {
   margin: 0 0 0.2em 0.04em;
   border-radius: 50%;
   background: #ff1e00;
+  animation: ld-fade 0.3s 0.35s ease-out backwards;
+}
+
+/* plain CSS so the intro plays from the first paint, before any script has loaded; "backwards"
+   only holds the start state, so GSAP can take these elements over afterwards */
+@keyframes ld-rise {
+  from {
+    transform: translateY(110%);
+  }
+}
+
+@keyframes ld-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-char,
+  .ld-dot,
+  .ld-meta {
+    animation: none;
+  }
+}
+
+.ld-meta {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: var(--gutter);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--fg);
+  animation: ld-fade 0.4s 0.2s ease-out backwards;
+}
+
+.ld-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 0.9em;
+}
+
+.ld-count {
+  font-family: var(--heavy);
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: clamp(56px, 11vw, 168px);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ld-pct {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: normal;
+  font-size: 0.42em;
+  color: var(--red);
+  margin-left: 0.06em;
+}
+
+.ld-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--gutter) * -0.5 - 1px);
+  height: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.ld-bar {
+  display: block;
+  height: 100%;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }
 
 .ld-panel {

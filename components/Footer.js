@@ -180,14 +180,17 @@ export default function Footer() {
       stage.renderer.render(scene, camera);
     });
 
+    // the dots gather as soon as the footer is really on screen; an observer can't drift the way
+    // a measured scroll position does when images above finish loading late
+    const reveal = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      reveal.disconnect();
+      gsap.to(uniforms.uIn, { value: 1, duration: 1.8, ease: "expo.out" });
+    }, { rootMargin: "0px 0px -15% 0px" });
+    reveal.observe(wrap);
+
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root);
-      gsap.to(uniforms.uIn, {
-        value: 1,
-        duration: 2.6,
-        ease: "expo.out",
-        scrollTrigger: { trigger: el, start: "top 75%" },
-      });
       // the name rises letter by letter from the middle outwards as the page bottoms out
       gsap.fromTo(
         q(".footer-name .char, .footer-dot"),
@@ -203,6 +206,7 @@ export default function Footer() {
 
     return () => {
       clearTimeout(rebuild);
+      reveal.disconnect();
       el.removeEventListener("pointermove", onMove);
       el.removeEventListener("pointerleave", onLeave);
       ctx.revert();

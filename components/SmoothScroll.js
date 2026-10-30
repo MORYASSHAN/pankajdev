@@ -34,8 +34,18 @@ export default function SmoothScroll() {
     const refresh = () => ScrollTrigger.refresh();
     document.fonts.ready.then(refresh);
     window.addEventListener("load", refresh);
+    // lazy images keep arriving after "load" on slow connections, so re-measure as they land
+    let pending = 0;
+    const onImage = (e) => {
+      if (e.target.tagName !== "IMG") return;
+      clearTimeout(pending);
+      pending = setTimeout(refresh, 200);
+    };
+    document.addEventListener("load", onImage, true);
 
     return () => {
+      clearTimeout(pending);
+      document.removeEventListener("load", onImage, true);
       document.removeEventListener("click", onClick);
       window.removeEventListener("load", refresh);
       gsap.ticker.remove(raf);
