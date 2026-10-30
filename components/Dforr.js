@@ -42,14 +42,9 @@ export default function Dforr() {
         stagger: 0.07,
         scrollTrigger: { trigger: q(".dx-word")[0], start: "top 80%" },
       });
-      gsap.from(q(".dx-fade"), {
-        y: 30,
-        opacity: 0,
-        duration: 1.1,
-        ease: "power3.out",
-        stagger: 0.08,
-        scrollTrigger: { trigger: q(".dx-word")[0], start: "top 60%" },
-      });
+      q(".dx-fade").forEach((f) =>
+        gsap.from(f, { y: 30, opacity: 0, duration: 1.1, ease: "power3.out", scrollTrigger: { trigger: f, start: "top 90%" } })
+      );
       gsap.from(q(".dx-card"), {
         y: 80,
         rotate: (i) => (i - 1.5) * 3,
@@ -58,6 +53,14 @@ export default function Dforr() {
         ease: "expo.out",
         stagger: 0.1,
         scrollTrigger: { trigger: q(".dx-cards")[0], start: "top 85%" },
+      });
+      gsap.from(q(".dx-want"), {
+        y: 50,
+        opacity: 0,
+        duration: 1.2,
+        ease: "expo.out",
+        stagger: 0.12,
+        scrollTrigger: { trigger: q(".dx-vision ol")[0], start: "top 85%" },
       });
       // the giant word drifts a little against the scroll
       gsap.fromTo(
@@ -99,6 +102,37 @@ export default function Dforr() {
             <p>{p.line}</p>
           </article>
         ))}
+      </div>
+
+      <div className="dx-vision">
+        <span className="mono dx-fade">{dforr.vision.kicker}</span>
+        <h3 className="dx-fade">{dforr.vision.title}</h3>
+        <p className="dx-fade">{dforr.vision.intro}</p>
+        <ol>
+          {dforr.vision.wants.map((w, i) => (
+            <li key={i} className="dx-want">
+              <span>0{i + 1}</span>
+              <p>{w}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="dx-relation dx-fade">
+        <img src={person.photo} alt={person.full} />
+        <div>
+          <span className="mono">My relation to DFORR</span>
+          <h3>{dforr.relation.title}</h3>
+          <p>{dforr.relation.text}</p>
+          <dl>
+            {dforr.relation.rows.map(([k, v]) => (
+              <div key={k}>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
 
       <ul className="dx-facts dx-fade mono">

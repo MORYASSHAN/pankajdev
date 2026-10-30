@@ -190,8 +190,14 @@ export default function About() {
 
         <div className="about-media" ref={media}>
           <div className="about-media-meta">
-            <span>{person.company}</span>
-            <span>{person.city}</span>
+            <span>{person.vworld}</span>
+            <span>
+              {person.company} · {person.city}
+            </span>
+          </div>
+          <div className="about-media-meta about-media-meta--bottom">
+            <span>{person.role}</span>
+            <span>{person.universe}</span>
           </div>
           <a className="about-media-label" href="#work">
             → DFORR

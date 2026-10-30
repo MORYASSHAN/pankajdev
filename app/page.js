@@ -4,7 +4,9 @@ import Chrome from "@/components/Chrome";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Marquee from "@/components/Marquee";
-import Clock from "@/components/Clock";
+import Dforr from "@/components/Dforr";
+import Manifesto from "@/components/Manifesto";
+import Maya from "@/components/Maya";
 import Projects from "@/components/Projects";
 import Gallery from "@/components/Gallery";
 import Skills from "@/components/Skills";
@@ -25,7 +27,9 @@ export default function Home() {
         <div className="after-hero">
           <About />
           <Marquee words={roles} />
-          <Clock />
+          <Manifesto />
+          <Dforr />
+          <Maya />
           <Projects />
           <Gallery />
           <Skills />

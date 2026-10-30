@@ -30,8 +30,14 @@ export default function SmoothScroll() {
     };
     document.addEventListener("click", onClick);
 
+    // late fonts and images change section heights; re-measure so every trigger stays reachable
+    const refresh = () => ScrollTrigger.refresh();
+    document.fonts.ready.then(refresh);
+    window.addEventListener("load", refresh);
+
     return () => {
       document.removeEventListener("click", onClick);
+      window.removeEventListener("load", refresh);
       gsap.ticker.remove(raf);
       lenis.destroy();
     };

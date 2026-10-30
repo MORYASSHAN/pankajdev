@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { projects } from "@/lib/content";
+import { cases } from "@/lib/cases";
 
 export default function ProjectDetail({ index, onClose, onNav }) {
   const root = useRef(null);
@@ -91,6 +92,46 @@ export default function ProjectDetail({ index, onClose, onNav }) {
               </div>
             </div>
           </div>
+
+          {(cases[p.slug] || []).map((sec) => (
+            <section className="pd-sec" key={sec.title}>
+              <h4 className="mono">{sec.title}</h4>
+              <div className="pd-sec-body">
+                {sec.text && <p className="pd-sec-text">{sec.text}</p>}
+                {sec.quote && <blockquote className="pd-sec-quote">“{sec.quote}”</blockquote>}
+                {sec.bars && (
+                  <div className="pd-bars">
+                    {sec.bars.map(([label, ms]) => (
+                      <div className="pd-bar" key={label} style={{ "--w": ms / sec.bars[0][1] }}>
+                        <span>{label}</span>
+                        <i />
+                        <b>{ms.toLocaleString("en-US")} ms</b>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {sec.rows && (
+                  <dl className="pd-rows">
+                    {sec.rows.map(([k, v]) => (
+                      <div key={k}>
+                        <dt>{k}</dt>
+                        <dd>{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {sec.chips && (
+                  <div className="chips">
+                    {sec.chips.map((c) => (
+                      <span key={c} className="chip">
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+          ))}
 
           <div className="pd-images">
             {p.images.map((src) => (

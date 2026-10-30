@@ -1,6 +1,7 @@
 import { Inter, Instrument_Serif, Archivo } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
+import "./sections.css";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "800"], variable: "--font-sans" });
 const heavy = Archivo({ subsets: ["latin"], weight: "variable", axes: ["wdth"], variable: "--font-heavy" });

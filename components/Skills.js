@@ -20,8 +20,8 @@ export default function Skills() {
       });
       gsap.fromTo(
         q(".skills-arrow"),
-        { x: "-30vw" },
-        { x: "8vw", ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: true } }
+        { x: -60 },
+        { x: 20, ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "center top", scrub: true } }
       );
       gsap.from(q(".acc"), {
         y: 40,
@@ -29,7 +29,7 @@ export default function Skills() {
         duration: 1,
         ease: "power3.out",
         stagger: 0.07,
-        scrollTrigger: { trigger: q(".skills-right")[0], start: "top 80%" },
+        scrollTrigger: { trigger: q(".skills-list")[0], start: "top 85%" },
       });
     }, root);
     return () => ctx.revert();
@@ -37,23 +37,18 @@ export default function Skills() {
 
   return (
     <section className="skills" id="skills" ref={root} data-section="Skills">
-      <div className="skills-left">
-        <div className="skills-sticky">
-          <span className="small-label">Skills</span>
-          <h2 className="skills-heading">
-            <Split text={skills.heading} by="word" />
-          </h2>
-          <hr />
-          <a href="#contact" className="small-link hover-line">
-            Contact me +
-          </a>
-          <svg className="skills-arrow" viewBox="0 0 120 80" aria-hidden="true">
-            <path d="M0 30 H72 L50 6 H76 L108 40 L76 74 H50 L72 50 H0 Z" fill="var(--red)" />
-          </svg>
-        </div>
-      </div>
+      <span className="small-label">Skills</span>
+      <h2 className="skills-heading">
+        <Split text={skills.heading} by="word" />
+      </h2>
+      <a href="#contact" className="skills-contact small-link">
+        <svg className="skills-arrow" viewBox="0 0 120 80" aria-hidden="true">
+          <path d="M0 30 H72 L50 6 H76 L108 40 L76 74 H50 L72 50 H0 Z" fill="var(--red)" />
+        </svg>
+        <span className="hover-line">Contact me +</span>
+      </a>
 
-      <div className="skills-right">
+      <div className="skills-list">
         {skills.groups.map((g, i) => (
           <div className={`acc ${open === i ? "is-open" : ""}`} key={g.name}>
             <button type="button" className="acc-head" onClick={() => setOpen(open === i ? -1 : i)} aria-expanded={open === i}>
